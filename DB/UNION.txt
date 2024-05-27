@@ -1,0 +1,23 @@
+UNION은 두 개 이상의 SELECT 문의 결과를 결합하여 하나의 결과 집합으로 반환하는 데 사용되는 연산자이다. 각 SELECT 문의 결과 집합은 동일한 열 수와 동일한 데이터 유형을 가져야 한다. UNION 연산자는 중복된 행을 제거한다는 특징이 있다.
+
+기본적인 UNION 문법은 다음과 같다:
+SELECT column1, column2, ... FROM 테이블1
+UNION
+SELECT column1, column2, ... FROM 테이블2;
+
+여기서 각 SELECT 문은 동일한 열 수와 동일한 데이터 유형을 가진 열을 선택해야 한다. UNION을 사용하여 두 개의 SELECT 문의 결과를 결합할 수 있다.
+
+또한, UNION 연산자와 함께 사용할 수 있는 여러 옵션이 있다:
+
+1) UNION ALL: 중복된 행을 제거하지 않고 모든 행을 반환한다.
+ex) 
+SELECT column1, column2, ... FROM 테이블1
+UNION ALL
+SELECT column1, column2, ... FROM 테이블2;
+
+2) ORDER BY: 결과 집합을 정렬할 수 있다.
+ex) 
+(SELECT column1, column2, ... FROM 테이블1)
+UNION
+(SELECT column1, column2, ... FROM 테이블2)
+ORDER BY column1;
