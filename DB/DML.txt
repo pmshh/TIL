@@ -1,0 +1,21 @@
+DML(Data Manipulation Language)은 데이터베이스 테이블에 새로운 데이터를 삽입하거나 수정, 삭제하고 조회하는 등의 작업에 사용된다. 데이터의 실질적인 조작을 담당하는 언어이다.
+
+1) INSERT: 새로운 데이터를 테이블에 삽입한다.
+
+ex)
+INSERT INTO 테이블명 (column1, column2, ...) VALUES (value1, value2, ...);
+
+2) SELECT: 테이블에서 데이터를 조회한다.
+
+ex)
+SELECT column1, column2, ... FROM 테이블명 WHERE 조건;
+
+3) UPDATE: 테이블의 기존 데이터를 수정한다.
+
+ex)
+UPDATE 테이블명 SET column1 = value1, column2 = value2 WHERE 조건;
+
+4) DELETE: 테이블에서 데이터를 삭제한다.
+
+ex)
+DELETE FROM 테이블명 WHERE 조건;

@@ -1,0 +1,17 @@
+GROUP BY 절은 특정 열의 값에 따라 결과를 그룹화하는데 사용된다. GROUP BY를 사용하면 특정 열의 고유한 값에 따라 결과를 그룹으로 나누고, 각 그룹에 대한 집계 함수를 사용하여 그룹별로 데이터를 요약할 수 있다.
+
+일반적으로 GROUP BY는 집계 함수인 COUNT, SUM, AVG 등과 함께 사용된다. 이러한 집계 함수는 각 그룹에 대한 통계를 계산하여 반환한다.
+
+간단한 GROUP BY 문법은 다음과 같다:
+SELECT column1, aggregate_function(column2)
+FROM 테이블명
+GROUP BY column1;
+
+여기서 column1은 그룹화할 열이고, aggregate_function(column2)는 해당 그룹에 대해 계산할 집계 함수이다. 해당 쿼리를 실행하면 열 column1의 값에 따라 결과가 그룹화되고, 각 그룹에 대해 지정된 집계 함수가 계산된다.
+
+예를 들어, 주문 테이블에서 각 고객별 주문 수를 계산하려면 다음과 같이 할 수 있다:
+SELECT customer_id, COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id;
+
+위 쿼리는 orders 테이블을 customer_id 열로 그룹화하고, 각 고객별 주문 수를 계산하여 반환한다.

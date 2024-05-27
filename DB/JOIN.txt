@@ -1,0 +1,23 @@
+JOIN은 두 개 이상의 테이블을 결합하여 연관된 데이터를 검색하는데 사용되는 기능이다. JOIN을 사용하면 데이터베이스에서 여러 테이블 간의 관계를 활용하여 더 복잡한 쿼리를 작성할 수 있다.
+
+MySQL에서는 여러 종류의 JOIN이 지원되며, 가장 일반적으로 사용되는 JOIN 유형에는 다음과 같은 것들이 있다:
+
+1) INNER JOIN: 두 개의 테이블에서 일치하는 행만을 반환한다. INNER JOIN은 두 테이블 사이에 공통된 값이 있는 경우에만 결과에 포함된다.
+
+ex)
+SELECT * FROM 테이블1 INNER JOIN 테이블2 ON 조건;
+
+2) LEFT JOIN (또는 LEFT OUTER JOIN): 왼쪽 테이블의 모든 행을 반환하고, 오른쪽 테이블에서 일치하는 행이 있는 경우에는 그것들도 반환한다. 오른쪽 테이블에 일치하는 행이 없는 경우에는 NULL 값이 반환된다.
+
+ex)
+SELECT * FROM 테이블1 LEFT JOIN 테이블2 ON 조건;
+
+3) RIGHT JOIN (또는 RIGHT OUTER JOIN): LEFT JOIN과 반대로 오른쪽 테이블의 모든 행을 반환하고, 왼쪽 테이블에서 일치하는 행이 있는 경우에는 그것들도 반환한다. 왼쪽 테이블에 일치하는 행이 없는 경우에는 NULL 값이 반환된다.
+
+ex)
+SELECT * FROM 테이블1 RIGHT JOIN 테이블2 ON 조건;
+
+4) FULL JOIN (또는 FULL OUTER JOIN): 왼쪽 테이블과 오른쪽 테이블의 모든 행을 반환하고, 양쪽 테이블에서 일치하는 행이 있는 경우에는 그것들도 반환한다.
+
+ex) 
+SELECT * FROM 테이블1 FULL JOIN 테이블2 ON 조건;

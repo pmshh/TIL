@@ -1,0 +1,44 @@
+DDL(Data Definition Language)은 데이터베이스 구조를 정의하고 관리하기 위한 언어이다.
+주로 데이터베이스 스키마, 테이블, 인덱스, 뷰 등을 정의하고 관리하는데 사용된다.
+
+1) CREATE: 데이터베이스 객체를 생성한다. 예를 들어 테이블, 뷰, 인덱스 등을 생성할 때 사용된다.
+
+ex) 
+CREATE TABLE 테이블명 (
+    column1 데이터형,
+    column2 데이터형,
+    ...
+);
+
+
+2) ALTER: 데이터베이스 객체를 수정한다. 테이블에 새로운 열을 추가하거나 기존 열을 수정하는 등의 작업에 사용된다.
+
+ex) 
+ALTER TABLE 테이블명
+ADD column_name 데이터형;
+
+
+3) DROP: 데이터베이스 객체를 삭제합니다. 테이블, 뷰, 인덱스 등을 삭제할 때 사용된다.
+
+ex) 
+DROP TABLE 테이블명;
+
+4) TRUNCATE: 테이블의 모든 데이터를 삭제하지만 테이블 자체는 삭제하지 않는다.
+
+ex)
+TRUNCATE TABLE 테이블명;
+
+5) COMMENT: 데이터베이스 객체에 대한 주석을 추가한다.
+
+ex)
+COMMENT ON TABLE 테이블명 IS '주석 내용';
+
+6) RENAME: 데이터베이스 객체의 이름을 변경한다.
+
+ex)
+RENAME 테이블명 TO 새로운_테이블명;
+
+7) GRANT/REVOKE: 데이터베이스 객체에 대한 권한을 부여하거나 해제한다.
+
+ex)
+GRANT SELECT, INSERT ON 테이블명 TO 사용자;
