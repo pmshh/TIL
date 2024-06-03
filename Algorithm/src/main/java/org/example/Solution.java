@@ -39,4 +39,12 @@ public class Solution {
         }
         return answer;
     }
+
+    public int[] solution5(int start, int end) {
+        int[] answer = new int[start-end+1];
+        for(int i=0; i<answer.length ; i++){
+            answer[i] = start--;
+        }
+        return answer;
+    }
 }
