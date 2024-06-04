@@ -47,4 +47,8 @@ public class Solution {
         }
         return answer;
     }
+
+    public String solution6(String my_string, int n) {
+        return my_string.substring(0,n);
+    }
 }

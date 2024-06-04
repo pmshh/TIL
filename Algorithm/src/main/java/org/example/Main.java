@@ -5,15 +5,22 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        // Solution5 Test - 프로그래머스 카운트 다운
+        // Solution6 Test - 프로그래머스 문자열의 앞의 n글자
         Solution solution = new Solution();
-        int start = 30;
-        int end = 15;
-        int[] result = solution.solution5(start, end);
-        System.out.println("Result:");
-        for (int num : result) {
-            System.out.print(num + " ");
-        }
+        String my_string = "banana";
+        int n = 3;
+        String result = solution.solution6(my_string, n);
+        System.out.println("result = " + result);
+
+        // Solution5 Test - 프로그래머스 카운트 다운
+//        Solution solution = new Solution();
+//        int start = 30;
+//        int end = 15;
+//        int[] result = solution.solution5(start, end);
+//        System.out.println("Result:");
+//        for (int num : result) {
+//            System.out.print(num + " ");
+//        }
 
         // Solution4 Test - 프로그래머스 접두사인지 확인하기
 //        Solution solution = new Solution();
