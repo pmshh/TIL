@@ -51,4 +51,13 @@ public class Solution {
     public String solution6(String my_string, int n) {
         return my_string.substring(0,n);
     }
+
+    public int[] solution7(int start, int end) {
+        int[] answer = new int[end - start + 1];
+
+        for(int i = 0; i <= end - start; i++){
+            answer[i] = i + start;
+        }
+        return answer;
+    }
 }
