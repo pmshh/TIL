@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent horizontal scroll */
+        }
+        #chat-page {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            overflow: hidden; /* Prevent horizontal scroll */
+        }
+        #messageArea {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .chat-message, .event-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            position: relative;
+            max-width: 70%;
+            clear: both;
+            word-wrap: break-word;
+            overflow-wrap: break-word; /* Prevent long words from causing horizontal scroll */
+            word-break: break-word; /* Ensure long words break correctly */
+        }
+        .event-message {
+            color: #777;
+            font-style: italic;
+            background-color: #eee;
+            text-align: center;
+            margin: 10px auto;
+        }
+        .chat-message .nickname {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .chat-message .message-content {
+            display: block;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word; /* Ensure long words break correctly */
+        }
+        .chat-message.me {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .chat-message.me::after {
+            content: "";
+            position: absolute;
+            border-style: solid;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #dcf8c6 transparent transparent;
+            top: 10px;
+            right: -10px;
+        }
+        .chat-message.other {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        .chat-message.other::after {
+            content: "";
+            position: absolute;
+            border-style: solid;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #ffffff;
+            top: 10px;
+            left: -10px;
+        }
+        .message-input-container {
+            display: flex;
+            padding-top: 10px;
+            padding-right: 10px;
+            padding-left: 10px;
+            width: 100%; /* Ensure input container fits within the chat-page */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        .message-input-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            overflow-wrap: break-word; /* Prevent long words from causing horizontal scroll */
+        }
+        .message-input-container button {
+            background-color: #ffeb3b;
+            border: none;
+            color: #000;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-left: 10px;
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+        .message-input-container button:hover {
+            background-color: #fdd835;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-page">
+    <ul id="messageArea"></ul>
+    <div class="message-input-container">
+        <input type="text" id="message" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="disconnect()">Leave</button>
+    </div>
+</div>
+
+<script>
+    var stompClient = null;
+    var username = null;
+    var chatRoomId = null;
+
+    function getQueryParams() {
+        var params = {};
+        window.location.search.substring(1).split("&").forEach(function(param) {
+            var pair = param.split("=");
+            params[pair[0]] = decodeURIComponent(pair[1]);
+        });
+        return params;
+    }
+
+    function connect() {
+        var params = getQueryParams();
+        username = params.name;
+        chatRoomId = params.room;
+        console.log("Username: " + username + ", Chat Room ID: " + chatRoomId);
+
+        if (username && chatRoomId) {
+            var socket = new SockJS('/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, onConnected, onError);
+        }
+    }
+
+    function onConnected() {
+        console.log("Connected to WebSocket server.");
+        // Subscribe to the Chat Room Topic
+        stompClient.subscribe('/topic/' + chatRoomId, onMessageReceived);
+
+        // Tell your username to the server
+        stompClient.send("/app/chat.addUser",
+            {},
+            JSON.stringify({sender: username, type: 'JOIN', roomId: chatRoomId})
+        );
+    }
+
+    function onError(error) {
+        console.error('Could not connect to WebSocket server. Please refresh this page to try again!', error);
+    }
+
+    function sendMessage() {
+        var messageContent = document.getElementById("message").value.trim();
+
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: username,
+                content: messageContent,
+                type: 'CHAT',
+                roomId: chatRoomId
+            };
+
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            document.getElementById("message").value = '';
+        }
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.send("/app/chat.leaveUser",
+                {},
+                JSON.stringify({sender: username, type: 'LEAVE', roomId: chatRoomId})
+            );
+            stompClient.disconnect();
+        }
+        window.location.href = '/';
+        console.log("Disconnected from WebSocket server.");
+    }
+
+    function onMessageReceived(payload) {
+        var message = JSON.parse(payload.body);
+        console.log("Message received: ", message);
+
+        var messageElement = document.createElement('li');
+
+        if (message.type === 'JOIN') {
+            messageElement.classList.add('event-message');
+            messageElement.textContent = message.content;
+        } else if (message.type === 'LEAVE') {
+            messageElement.classList.add('event-message');
+            messageElement.textContent = message.content;
+        } else {
+            messageElement.classList.add('chat-message');
+
+            var usernameElement = document.createElement('span');
+            usernameElement.classList.add('nickname');
+            var usernameText = document.createTextNode(message.sender);
+            usernameElement.appendChild(usernameText);
+            messageElement.appendChild(usernameElement);
+
+            var textElement = document.createElement('span');
+            textElement.classList.add('message-content');
+            var messageText = document.createTextNode(message.content);
+            textElement.appendChild(messageText);
+
+            messageElement.appendChild(textElement);
+
+            if (message.sender === username) {
+                messageElement.classList.add('me');
+            } else {
+                messageElement.classList.add('other');
+            }
+        }
+
+        document.getElementById('messageArea').appendChild(messageElement);
+        messageElement.scrollIntoView();
+    }
+
+    $(document).ready(function() {
+        connect();
+    });
+</script>
+
+</body>
+</html>
