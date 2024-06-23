@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Rooms</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #chatroom-page {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 360px;
+        }
+        #chatroom-page div {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #ffeb3b;
+            border: none;
+            color: #000;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #fdd835;
+        }
+        #chatroom-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #chatroom-list li {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        #chatroom-list li:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div id="chatroom-page">
+    <div>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <input type="text" id="chatroom-name" placeholder="Enter chat room name" />
+        <button onclick="createChatRoom()">Create Chat Room</button>
+    </div>
+    <div>
+        <ul id="chatroom-list"></ul>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        loadChatRooms();
+    });
+
+    function loadChatRooms() {
+        $.get('/api/chatrooms', function(data) {
+            var chatRoomList = $('#chatroom-list');
+            chatRoomList.empty();
+            data.forEach(function(chatRoom) {
+                var li = $('<li></li>').text(chatRoom.roomName);
+                li.on('click', function() {
+                    enterChatRoom(chatRoom.id, chatRoom.roomName);
+                });
+                chatRoomList.append(li);
+            });
+        });
+    }
+
+    function createChatRoom() {
+        var chatRoomName = $('#chatroom-name').val().trim();
+        var userName = $('#username').val().trim();
+        if (chatRoomName && userName) {
+            var chatRoomRequest = {
+                roomName: chatRoomName,
+                userName: userName
+            };
+            $.ajax({
+                url: '/api/chatrooms',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(chatRoomRequest),
+                success: function(data) {
+                    loadChatRooms();
+                },
+                error: function(error) {
+                    console.error("Error creating chat room:", error);
+                }
+            });
+        } else {
+            alert('Please enter both your name and chat room name.');
+        }
+    }
+
+    function enterChatRoom(chatRoomId, chatRoomName) {
+        var userName = $('#username').val().trim();
+        if (userName) {
+            window.location.href = 'chat?room=' + chatRoomId + '&name=' + userName;
+        } else {
+            alert('Please enter your name.');
+        }
+    }
+</script>
+</body>
+</html>
