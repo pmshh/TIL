@@ -1,12 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
+<h1>Data List</h1>
 
-    <span th:text="${DATA}"></span>
+<form action="/save" method="POST">
+    <label for="data">Data:</label>
+    <input type="text" id="data" name="data" required><br>
 
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required><br>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required><br>
+
+    <button type="submit">Save</button>
+</form>
+
+<h2>Saved Data</h2>
+<ul>
+    <li th:each="data : ${dataList}">
+        <p>ID: <span th:text="${data._id}"></span></p>
+        <p>Data: <span th:text="${data.data}"></span></p>
+        <p>Name: <span th:text="${data.additionalData.name}"></span></p>
+        <p>City: <span th:text="${data.additionalData.address.city}"></span></p>
+        <p>Age: <span th:text="${data.additionalData.age}"></span></p>
+    </li>
+</ul>
 </body>
 </html>

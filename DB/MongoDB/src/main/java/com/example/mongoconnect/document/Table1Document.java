@@ -12,4 +12,18 @@ public class Table1Document {
     private String _id;
 
     private String data;
+
+    private AdditionalData additionalData;
+
+    @Data
+    public static class AdditionalData {
+        private String name;
+        private int age;
+        private Address address;
+
+        @Data
+        public static class Address {
+            private String city;
+        }
+    }
 }
